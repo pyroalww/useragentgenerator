@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Agent Generator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+    .container {
+        text-align: center;
+    }
+    h1 {
+        color: #333;
+    }
+    .user-agent {
+        font-size: 18px;
+        color: #666;
+        margin-top: 20px;
+    }
+    button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>User Agent Generator by pyro</h1>
+    <p class="user-agent" id="userAgent">Generated User Agent will appear here</p>
+    <button onclick="generateUserAgent()">Generatt</button>
+    <a href="https://instagram.com/C4gwn" target="_blank" rel="noopener noreferrer">made by pyroalww</a>
+</div>
+
+<script>
+function generateUserAgent() {
+    var androidVersions = ['4.0', '4.1', '4.2', '4.3', '4.4', '5.0', '5.1', '6.0', '7.0', '7.1', '8.0', '8.1', '9.0', '10.0', '11.0', '12.0', '13.0'];
+    var iosVersions = ['9_0', '9_1', '9_2', '9_3', '10_0', '10_1', '10_2', '10_3', '11_0', '11_1', '11_2', '11_3', '12_0', '12_1', '12_2', '12_3', '13_0', '13_1', '13_2', '13_3', '14_0', '15_0', '16_0'];
+    var windowsVersions = ['NT 5.1', 'NT 6.1', 'NT 6.2', 'NT 6.3', 'NT 10.0'];
+    var macVersions = ['Intel Mac OS X 10_10_1', 'Intel Mac OS X 10_11_1', 'Intel Mac OS X 10_12_1', 'Intel Mac OS X 10_13_1', 'Intel Mac OS X 10_14_1'];
+    var phoneModels = [
+        'Samsung Galaxy S21', 'Google Pixel 5', 'OnePlus 9 Pro', 'Xiaomi Mi 11', 'Huawei P40 Pro',
+        'Sony Xperia 5 III', 'LG Velvet', 'Motorola Moto G Power', 'Nokia 8.3', 'Oppo Find X3 Pro',
+        'Realme GT', 'Vivo X60 Pro', 'Asus Zenfone 8', 'Lenovo Legion Phone Duel 2', 'Samsung Galaxy Note 20',
+        'Google Pixel 4a', 'OnePlus Nord', 'Xiaomi Redmi Note 10', 'Huawei Mate 40 Pro', 'Sony Xperia 1 III'
+    ];
+    var languages = ['en-US', 'en-GB', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 'pt-PT', 'ru-RU', 'zh-CN', 'ja-JP'];
+    var browsers = [
+        'Mozilla/5.0 (Linux; Android {0}; {1}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Mobile Safari/537.36',
+        'Mozilla/5.0 (Windows NT {0}; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36',
+        'Mozilla/5.0 (Macintosh; Intel {0}; Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS {0} like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1'
+    ];
+
+    function getRandomElement(array) {
+        return array[Math.floor(Math.random() * array.length)];
+    }
+
+    var platform = getRandomElement([androidVersions, windowsVersions, macVersions, iosVersions]);
+    var userAgent;
+    if (platform === androidVersions || platform === iosVersions) {
+        var version = getRandomElement(platform);
+        var model = getRandomElement(phoneModels);
+        userAgent = browsers[0].replace('{0}', version).replace('{1}', model);
+    } else if (platform === windowsVersions) {
+        var version = getRandomElement(platform);
+        userAgent = browsers[1].replace('{0}', version);
+    } else if (platform === macVersions) {
+        var version = getRandomElement(platform);
+        userAgent = browsers[2].replace('{0}', version);
+    } else {
+        var version = getRandomElement(platform);
+        userAgent = browsers[3].replace('{0}', version);
+    }
+
+    document.getElementById('userAgent').textContent = userAgent;
+}
+</script>
+
+</body>
+</html>
