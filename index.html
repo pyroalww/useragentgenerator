@@ -39,14 +39,50 @@
     button:hover {
         background-color: #0056b3;
     }
+    #loading {
+        display: none;
+    }
+    .form-group {
+        margin-top: 20px;
+    }
+    .form-group label {
+        margin-right: 10px;
+    }
+    .multi-generate {
+        display: none;
+        margin-top: 20px;
+    }
+    .user-agent-list {
+        max-height: 200px;
+        overflow-y: scroll;
+        margin-top: 20px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+    }
+    .api-link {
+        margin-top: 20px;
+        font-size: 16px;
+    }
 </style>
 </head>
 <body>
 
 <div class="container">
     <h1>User Agent Generator by pyro</h1>
-    <p class="user-agent" id="userAgent">Generated User Agent will appear here</p>
-    <button onclick="generateUserAgent()">Generatt</button>
+    <div class="user-agent" id="userAgent">Generated User Agent will appear here</div>
+    <button onclick="generateUserAgent()">Generate</button>
+    <button onclick="toggleMultiGenerate()">Generate Multiple</button>
+    <div class="multi-generate" id="multiGenerate">
+        <div class="form-group">
+            <label for="numberOfAgents">Number of Agents:</label>
+            <input type="number" id="numberOfAgents" min="1" value="5">
+        </div>
+        <button onclick="generateMultipleUserAgents()">Generate</button>
+    </div>
+    <div class="user-agent-list" id="userAgentList"></div>
+    <div id="loading">Generating...</div>
+    <div class="api-link" id="apiLink">API Endpoint: <a href="#" id="apiUrl"></a></div>
     <a href="https://instagram.com/C4gwn" target="_blank" rel="noopener noreferrer">made by pyroalww</a>
 </div>
 
@@ -74,25 +110,115 @@ function generateUserAgent() {
         return array[Math.floor(Math.random() * array.length)];
     }
 
+    var version, model, userAgent;
     var platform = getRandomElement([androidVersions, windowsVersions, macVersions, iosVersions]);
-    var userAgent;
+
     if (platform === androidVersions || platform === iosVersions) {
-        var version = getRandomElement(platform);
-        var model = getRandomElement(phoneModels);
+        version = getRandomElement(platform);
+        model = getRandomElement(phoneModels);
         userAgent = browsers[0].replace('{0}', version).replace('{1}', model);
     } else if (platform === windowsVersions) {
-        var version = getRandomElement(platform);
+        version = getRandomElement(platform);
         userAgent = browsers[1].replace('{0}', version);
     } else if (platform === macVersions) {
-        var version = getRandomElement(platform);
+        version = getRandomElement(platform);
         userAgent = browsers[2].replace('{0}', version);
     } else {
-        var version = getRandomElement(platform);
+        version = getRandomElement(platform);
         userAgent = browsers[3].replace('{0}', version);
     }
 
     document.getElementById('userAgent').textContent = userAgent;
+    updateApiLink(userAgent);
 }
+
+function toggleMultiGenerate() {
+    var multiGenerate = document.getElementById('multiGenerate');
+    var generateButton = document.querySelector('button:nth-of-type(2)');
+    if (multiGenerate.style.display === 'none') {
+        multiGenerate.style.display = 'block';
+        generateButton.textContent = 'Generate Single';
+    } else {
+        multiGenerate.style.display = 'none';
+        generateButton.textContent = 'Generate Multiple';
+    }
+}
+
+function generateMultipleUserAgents() {
+    var numberOfAgents = parseInt(document.getElementById('numberOfAgents').value);
+    var userAgentList = document.getElementById('userAgentList');
+    userAgentList.innerHTML = '';
+    for (var i = 0; i < numberOfAgents; i++) {
+        var userAgentItem = document.createElement('div');
+        userAgentItem.textContent = generateSingleUserAgent();
+        userAgentList.appendChild(userAgentItem);
+    }
+}
+
+function generateSingleUserAgent() {
+    var androidVersions = ['4.0', '4.1', '4.2', '4.3', '4.4', '5.0', '5.1', '6.0', '7.0', '7.1', '8.0', '8.1', '9.0', '10.0', '11.0', '12.0', '13.0'];
+    var iosVersions = ['9_0', '9_1', '9_2', '9_3', '10_0', '10_1', '10_2', '10_3', '11_0', '11_1', '11_2', '11_3', '12_0', '12_1', '12_2', '12_3', '13_0', '13_1', '13_2', '13_3', '14_0', '15_0', '16_0'];
+    var windowsVersions = ['NT 5.1', 'NT 6.1', 'NT 6.2', 'NT 6.3', 'NT 10.0'];
+    var macVersions = ['Intel Mac OS X 10_10_1', 'Intel Mac OS X 10_11_1', 'Intel Mac OS X 10_12_1', 'Intel Mac OS X 10_13_1', 'Intel Mac OS X 10_14_1'];
+    var phoneModels = [
+        'Samsung Galaxy S21', 'Google Pixel 5', 'OnePlus 9 Pro', 'Xiaomi Mi 11', 'Huawei P40 Pro',
+        'Sony Xperia 5 III', 'LG Velvet', 'Motorola Moto G Power', 'Nokia 8.3', 'Oppo Find X3 Pro',
+        'Realme GT', 'Vivo X60 Pro', 'Asus Zenfone 8', 'Lenovo Legion Phone Duel 2', 'Samsung Galaxy Note 20',
+        'Google Pixel 4a', 'OnePlus Nord', 'Xiaomi Redmi Note 10', 'Huawei Mate 40 Pro', 'Sony Xperia 1 III'
+    ];
+    var languages = ['en-US', 'en-GB', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 'pt-PT', 'ru-RU', 'zh-CN', 'ja-JP'];
+    var browsers = [
+        'Mozilla/5.0 (Linux; Android {0}; {1}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Mobile Safari/537.36',
+        'Mozilla/5.0 (Windows NT {0}; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36',
+        'Mozilla/5.0 (Macintosh; Intel {0}; Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS {0} like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1'
+    ];
+
+    function getRandomElement(array) {
+        return array[Math.floor(Math.random() * array.length)];
+    }
+
+    var version, model, userAgent;
+    var platform = getRandomElement([androidVersions, windowsVersions, macVersions, iosVersions]);
+
+    if (platform === androidVersions || platform === iosVersions) {
+        version = getRandomElement(platform);
+        model = getRandomElement(phoneModels);
+        userAgent = browsers[0].replace('{0}', version).replace('{1}', model);
+    } else if (platform === windowsVersions) {
+        version = getRandomElement(platform);
+        userAgent = browsers[1].replace('{0}', version);
+    } else if (platform === macVersions) {
+        version = getRandomElement(platform);
+        userAgent = browsers[2].replace('{0}', version);
+    } else {
+        version = getRandomElement(platform);
+        userAgent = browsers[3].replace('{0}', version);
+    }
+
+    return userAgent;
+}
+
+function updateApiLink(userAgent) {
+    var apiUrl = document.getElementById('apiUrl');
+    var apiLink = document.getElementById('apiLink');
+    apiUrl.textContent = window.location.href + 'api/user-agent';
+    apiLink.style.display = 'block';
+}
+
+// API Endpoint
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.get('/api/user-agent', (req, res) => {
+    var userAgent = generateSingleUserAgent();
+    res.send(userAgent);
+});
+
+app.listen(port, () => {
+    console.log(`API listening at http://localhost:${port}`);
+});
 </script>
 
 </body>
